@@ -1,4 +1,4 @@
-dash==2.11.1
-pandas==1.5.3
-plotly==5.15.0
-gunicorn==20.1.0  # Optional, if deploying
+dash==2.18.2
+pandas==2.2.3
+plotly==5.22.0
+gunicorn==23.0.0
