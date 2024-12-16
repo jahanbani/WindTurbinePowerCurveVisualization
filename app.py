@@ -20,7 +20,7 @@ turbines = sorted(data_long["Turbine"].unique())
 
 # Initialize Dash app
 app = dash.Dash(__name__)
-
+server = app.server
 # App layout with left-right structure
 app.layout = html.Div(
     style={
@@ -94,8 +94,10 @@ def update_plot(selected_turbines):
                 y=filtered_data["Power"],
                 mode="lines+markers",
                 name=turbine,  # Show turbine name in legend
-                text=[turbine] * len(filtered_data),  # Turbine name as hover text
-                hoverinfo="text+x+y",  # Show text (turbine name) and coordinates
+                # Turbine name as hover text
+                text=[turbine] * len(filtered_data),
+                # Show text (turbine name) and coordinates
+                hoverinfo="text+x+y",
                 line=dict(width=2),
             )
         )
