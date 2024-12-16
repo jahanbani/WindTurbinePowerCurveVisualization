@@ -21,6 +21,7 @@ turbines = sorted(data_long["Turbine"].unique())
 # Initialize Dash app
 app = dash.Dash(__name__)
 server = app.server
+
 # App layout with left-right structure
 app.layout = html.Div(
     style={
