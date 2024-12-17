@@ -1,4 +1,5 @@
 import dash
+import os
 from dash import dcc, html, Input, Output, State
 import pandas as pd
 import plotly.graph_objects as go
@@ -55,7 +56,8 @@ app.layout = html.Div(
                 ),
                 html.Div(
                     id="warning-message",
-                    style={"color": "red", "textAlign": "center", "marginTop": "10px"},
+                    style={"color": "red", "textAlign": "center",
+                           "marginTop": "10px"},
                 ),
             ],
         ),
@@ -75,7 +77,8 @@ app.layout = html.Div(
 
 # Callback for dynamic plotting with restrictions
 @app.callback(
-    [Output("power-curve-plot", "figure"), Output("warning-message", "children")],
+    [Output("power-curve-plot", "figure"),
+     Output("warning-message", "children")],
     [Input("turbine-dropdown", "value")],
 )
 def update_plot(selected_turbines):
@@ -119,4 +122,7 @@ def update_plot(selected_turbines):
 
 # Run the app
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    # app.run_server(debug=True)
+    # Default to port 8080 if PORT is not set
+    port = int(os.environ.get("PORT", 8080))
+    app.run_server(host="0.0.0.0", port=port)
