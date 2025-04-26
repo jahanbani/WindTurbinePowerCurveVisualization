@@ -13,16 +13,16 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # List current directory for debugging
-RUN ls -la
+RUN echo "Initial directory contents:" && ls -la
 
 # Copy all files explicitly
 COPY . .
 
 # List contents after copying to verify files
-RUN ls -la
+RUN echo "After copying, directory contents:" && ls -la /app
 
 # Make run.py executable
-RUN chmod +x run.py
+RUN chmod +x /app/run.py
 
 EXPOSE 4000
 
@@ -30,5 +30,5 @@ EXPOSE 4000
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
 
-# Use Python directly instead of Gunicorn
-CMD ["python", "run.py"] 
+# Debug command to show files before running
+CMD echo "Final directory contents:" && ls -la /app && python /app/run.py 
