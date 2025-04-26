@@ -19,22 +19,38 @@ data_long["Wind Speed"] = data_long["Wind Speed"].astype(float)
 # Sort turbines alphabetically
 turbines = sorted(data_long["Turbine"].unique())
 
-# Initialize Dash app
-app = dash.Dash(__name__)
+# Initialize Dash app with meta tags for mobile responsiveness
+app = dash.Dash(
+    __name__,
+    meta_tags=[
+        {"name": "viewport", "content": "width=device-width, initial-scale=1.0"}
+    ]
+)
 server = app.server
 
-# App layout with left-right structure
+# App layout with responsive design
 app.layout = html.Div(
     style={
         "display": "flex",
-        "flexDirection": "row",
-        "justifyContent": "space-between",
-        "padding": "20px",
+        "flexDirection": "column",  # Default to column for mobile
+        "padding": "10px",
+        "maxWidth": "100%",
     },
+    className="container",
     children=[
-        # Left Section: Multi-select dropdown for turbines
+        # Header
+        html.H2(
+            "Wind Turbine Power Curve Visualization",
+            style={"textAlign": "center", "color": "#2C3E50", "marginBottom": "20px"},
+        ),
+        
+        # Selection Section
         html.Div(
-            style={"width": "30%", "padding": "10px"},
+            style={
+                "width": "100%", 
+                "padding": "10px",
+                "marginBottom": "20px"
+            },
             children=[
                 html.H3(
                     "Select Wind Turbines",
@@ -49,30 +65,87 @@ app.layout = html.Div(
                     multi=True,  # Allow multi-selection
                     style={
                         "fontSize": "14px",
-                        # "maxHeight": "400px",
-                        # "overflowY": "auto",
                     },
                     maxHeight=400,
                 ),
                 html.Div(
                     id="warning-message",
-                    style={"color": "red", "textAlign": "center",
-                           "marginTop": "10px"},
+                    style={"color": "red", "textAlign": "center", "marginTop": "10px"},
                 ),
             ],
         ),
-        # Right Section: Graph display
+        
+        # Graph display
         html.Div(
-            style={"width": "65%", "padding": "10px"},
+            style={"width": "100%", "padding": "10px"},
             children=[
                 html.H3(
                     "Power Curves", style={"textAlign": "center", "color": "#2C3E50"}
                 ),
-                dcc.Graph(id="power-curve-plot"),
+                dcc.Graph(
+                    id="power-curve-plot",
+                    config={
+                        'responsive': True,
+                        'displayModeBar': True,
+                        'displaylogo': False,
+                        'modeBarButtonsToRemove': ['lasso2d', 'select2d']
+                    },
+                    style={'height': '60vh'}  # Responsive height
+                ),
             ],
         ),
     ],
 )
+
+# Add a CSS media query for larger screens
+app.index_string = '''
+<!DOCTYPE html>
+<html>
+    <head>
+        {%metas%}
+        <title>{%title%}</title>
+        {%favicon%}
+        {%css%}
+        <style>
+            @media (min-width: 768px) {
+                .container {
+                    flex-direction: row !important;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                }
+                .container > div:first-of-type {
+                    width: 30% !important;
+                }
+                .container > div:last-of-type {
+                    width: 65% !important;
+                }
+            }
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+            }
+            /* Make text more readable on small screens */
+            @media (max-width: 480px) {
+                h2 {
+                    font-size: 1.5rem;
+                }
+                h3 {
+                    font-size: 1.2rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        {%app_entry%}
+        <footer>
+            {%config%}
+            {%scripts%}
+            {%renderer%}
+        </footer>
+    </body>
+</html>
+'''
 
 
 # Callback for dynamic plotting with restrictions
@@ -106,7 +179,7 @@ def update_plot(selected_turbines):
             )
         )
 
-    # Update layout for the plot
+    # Update layout for the plot with mobile-friendly settings
     fig.update_layout(
         title="Power Curves for Selected Turbines",
         xaxis_title="Wind Speed (m/s)",
@@ -114,6 +187,15 @@ def update_plot(selected_turbines):
         template="plotly_white",
         font=dict(family="Arial", size=12),
         hovermode="closest",
+        legend=dict(
+            orientation="h",  # Horizontal legend
+            yanchor="bottom",
+            y=1.02,
+            xanchor="center",
+            x=0.5
+        ),
+        margin=dict(l=40, r=20, t=60, b=40),  # Tighter margins
+        autosize=True,
     )
 
     # Return the figure and no warning message
@@ -122,7 +204,7 @@ def update_plot(selected_turbines):
 
 # Run the app
 if __name__ == "__main__":
-    # app.run_server(debug=True)
-    # Default to port 8080 if PORT is not set
-    port = int(os.environ.get("PORT", 8080))
-    app.run_server(host="0.0.0.0", port=port)
+    # app.run(debug=True)
+    # Default to port 4000 if PORT is not set
+    port = int(os.environ.get("PORT", 4000))
+    app.run(host="0.0.0.0", port=port)
