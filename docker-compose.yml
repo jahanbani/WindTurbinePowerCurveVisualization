@@ -9,4 +9,14 @@ services:
       - .:/app
     environment:
       - PORT=4000
-    restart: unless-stopped 
+    restart: unless-stopped
+    networks:
+      - web-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.windapp.rule=Host(`${DOMAIN:-localhost}`)"
+      - "traefik.http.services.windapp.loadbalancer.server.port=4000"
+
+networks:
+  web-network:
+    driver: bridge 
