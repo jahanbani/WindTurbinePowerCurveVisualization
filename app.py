@@ -26,6 +26,7 @@ app = dash.Dash(
         {"name": "viewport", "content": "width=device-width, initial-scale=1.0"}
     ]
 )
+# Ensure this line exists and is at module level for Gunicorn to find it
 server = app.server
 
 # App layout with responsive design

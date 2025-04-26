@@ -9,4 +9,8 @@ COPY . .
 
 EXPOSE 4000
 
-CMD ["gunicorn", "--bind", "0.0.0.0:4000", "app:server"] 
+# Make sure app.py is in the Python path
+ENV PYTHONPATH=/app
+
+# Use absolute path to app.py (working directory is /app)
+CMD ["gunicorn", "--bind", "0.0.0.0:4000", "--log-level=debug", "app:server"] 
