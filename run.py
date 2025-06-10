@@ -129,9 +129,9 @@ try:
         [Input("turbine-dropdown", "value")],
     )
     def update_plot(selected_turbines):
-        # Restrict to a maximum of 3 turbines
-        if len(selected_turbines) > 3:
-            return go.Figure(), "Please select up to 3 turbines only."
+        # Restrict to a maximum of 7 turbines
+        if len(selected_turbines) > 7:
+            return go.Figure(), "Please select up to 7 turbines only."
 
         # Initialize a figure
         fig = go.Figure()
